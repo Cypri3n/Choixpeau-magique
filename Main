@@ -59,7 +59,11 @@ for name in characteristiques_tab:
   House_tab.append(name['House'])
 
 #Fusion des tables
-
+#Fusion des tables
+for line in caracteristiques_tab:
+  for line2 in characters_tab:
+    if line['Name'] == line2['Name']:
+      House_tab.append(name['House'])
 
 
 
