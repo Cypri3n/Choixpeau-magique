@@ -1,1 +1,46 @@
+'''
+LE CHOIXPEAU MAGIQUE
 
+
+REGLES:
+
+
+
+
+BONUS:
+Le jeu possède également une interface graphique 
+
+
+
+
+AUTEURS:
+Cyprien Venard
+Martin Ray
+Ewen Legrand
+
+
+LICENCE:
+Aucune
+
+
+VERSION:
+0.1
+
+
+DATE DE DERNIERE REVISION:
+08/01/2024
+
+
+ADRESSE GITHUB: 
+https://github.com/Cypri3n/Choixpeau-magique/main
+
+'''
+
+# coding: utf-8
+
+#import des modules
+
+
+
+
+#Fusion des tables
