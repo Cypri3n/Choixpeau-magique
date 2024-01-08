@@ -39,8 +39,19 @@ https://github.com/Cypri3n/Choixpeau-magique/main
 # coding: utf-8
 
 #import des modules
-
+import csv
 
 
 
 #Fusion des tables
+
+with open("Characters.csv", mode='r', encoding='utf-8') as f:
+  reader = csv.DictReader(f,delimiter=';')
+  characteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
+print(characteristiques_tab)
+
+House_tab = []
+for name in characteristiques_tab:
+  House_tab.append(name['House'])
+print(House_tab)
+
