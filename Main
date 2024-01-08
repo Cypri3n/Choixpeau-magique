@@ -42,22 +42,22 @@ https://github.com/Cypri3n/Choixpeau-magique/main
 import csv
 
 
+#Données
 
-#Fusion des tables
 
 with open("Characters.csv", mode='r', encoding='utf-8') as f:
   reader = csv.DictReader(f,delimiter=';')
   characteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
-print(characteristiques_tab)
+
 
 with open("Characters.csv", mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f, delimiter=';')
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]
 
-print(characters_tab)
 
+#Fusion des tables
 House_tab = []
 for name in characteristiques_tab:
   House_tab.append(name['House'])
-print(House_tab)
+
 
