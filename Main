@@ -65,7 +65,20 @@ print(complete_tab)
 for line in caracteristiques_tab:
   for line2 in characters_tab:
     if line['Name'] == line2['Name']:
-      House_tab.append(name['House'])
+      house_tab.append(name['House'])
+
+#distance euclidienne
+
+def distance_euclidienne(perso_cible):
+  assert perso_cible in complete_tab, "le personnage cible n'est pas présent dans la liste disponible"
+  distance_dico = {}
+  for name in complete_tab
+    if name is not perso_cible:
+      distance[name] = sqrt((complete_tab[name]['Courage'] - complete_tab[perso_cible]['Courage'])**2 + \
+      (complete_tab[name]['Ambition'] - complete_tab[perso_cible]['Ambition'])**2 + \
+      (complete_tab[name]['Intelligence'] - complete_tab[perso_cible]['Intelligence'])**2 + \
+      (complete_tab[name]['Good'] - complete_tab[perso_cible]['Good'])**2 + \)
+  return distance_dico
 
 
 
