@@ -45,7 +45,7 @@ import csv
 #Données
 
 
-with open("Characters.csv", mode='r', encoding='utf-8') as f:
+with open("Caracteristiques_des_persos.csv", mode='r', encoding='utf-8') as f:
   reader = csv.DictReader(f,delimiter=';')
   characteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
 
@@ -54,11 +54,13 @@ with open("Characters.csv", mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f, delimiter=';')
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]
 
-House_tab = []
-for name in characteristiques_tab:
-  House_tab.append(name['House'])
 
-#Fusion des tables
+
+complete_tab = []
+for name in characteristiques_tab:
+    complete_tab.append(characters_tab[name]['House'])
+print(complete_tab)
+
 #Fusion des tables
 for line in caracteristiques_tab:
   for line2 in characters_tab:
