@@ -79,6 +79,7 @@ def distance_euclidienne(perso_cible):
 
 # Prédiction de la maison du profile cible
 def predict_house(perso_cible, k):
+
 #calcul distances
   distances = distance_euclidienne(perso_cible)
   sorted_neighbors = sorted(distances.items(), key=lambda x: x[1])[:k] 
@@ -89,3 +90,8 @@ def predict_house(perso_cible, k):
   predicted_house = max(set(neighbor_houses), key=neighbor_houses.count)
   
   return predicted_house
+
+
+# Vérification croisée
+
+def vérification_croisée(
