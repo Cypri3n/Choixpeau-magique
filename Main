@@ -72,7 +72,7 @@ for line in caracteristiques_tab:
 def distance_euclidienne(perso_cible):
   assert perso_cible in complete_tab, "le personnage cible n'est pas présent dans la liste disponible"
   distance_dico = {}
-  for name in complete_tab
+  for name in complete_tab:
     if name is not perso_cible:
       distance[name] = sqrt((complete_tab[name]['Courage'] - complete_tab[perso_cible]['Courage'])**2 + \
       (complete_tab[name]['Ambition'] - complete_tab[perso_cible]['Ambition'])**2 + \
