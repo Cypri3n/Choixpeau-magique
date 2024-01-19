@@ -43,42 +43,49 @@ import csv
 
 
 #Données
-
-
 with open("Caracteristiques_des_persos.csv", mode='r', encoding='utf-8') as f:
   reader = csv.DictReader(f,delimiter=';')
   characteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
-
-
 with open("Characters.csv", mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f, delimiter=';')
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]
-
-
-
 complete_tab = []
 for name in characteristiques_tab:
     complete_tab.append(characters_tab[name]['House'])
 print(complete_tab)
 
-#Fusion des tables
-for line in caracteristiques_tab:
+# Fusion des tables
+house_tab = []
+for line in characteristiques_tab:
   for line2 in characters_tab:
     if line['Name'] == line2['Name']:
-      house_tab.append(name['House'])
+      house_tab.append(line['House'])  
 
-#distance euclidienne
 
+
+
+# Distance euclidienne
 def distance_euclidienne(perso_cible):
-  assert perso_cible in complete_tab, "le personnage cible n'est pas présent dans la liste disponible"
+  assert perso_cible in complete_tab, "Ce personnage n'est pas disponible"
   distance_dico = {}
   for name in complete_tab:
-    if name is not perso_cible:
-      distance[name] = sqrt((complete_tab[name]['Courage'] - complete_tab[perso_cible]['Courage'])**2 + \
+    if name != perso_cible:
+      distance_dico[name] = sqrt((complete_tab[name]['Courage'] - complete_tab[perso_cible]['Courage'])**2 + \
       (complete_tab[name]['Ambition'] - complete_tab[perso_cible]['Ambition'])**2 + \
       (complete_tab[name]['Intelligence'] - complete_tab[perso_cible]['Intelligence'])**2 + \
-      (complete_tab[name]['Good'] - complete_tab[perso_cible]['Good'])**2 + \)
+      (complete_tab[name]['Good'] - complete_tab[perso_cible]['Good'])**2)
   return distance_dico
 
 
+# Prédiction de la maison du profile cible
+def predict_house(perso_cible, k):
+#calcul distances
+  distances = distance_euclidienne(perso_cible)
+  sorted_neighbors = sorted(distances.items(), key=lambda x: x[1])[:k] 
 
+  # Extract houses of the k nearest neighbors
+  neighbor_houses = [house for profile, house in sorted_neighbors]
+  # Prédit la maison en fonction des maisons les plus communes de kkpv
+  predicted_house = max(set(neighbor_houses), key=neighbor_houses.count)
+  
+  return predicted_house
