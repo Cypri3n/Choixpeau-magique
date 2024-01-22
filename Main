@@ -94,4 +94,17 @@ def predict_house(perso_cible, k):
 
 # Vérification croisée
 
-def vérification_croisée(
+def verification_croisee(max_k):
+    dico_reussites = {k: 0 for k in range(max_k)}  # Use a dictionary comprehension to initialize dico_reussites
+
+    for k in range(max_k):
+        for personnage in characters_list:
+            if predict_house(personnage, k) == house_tab[personnage]['House']:
+                dico_reussites[k] += 1
+
+  max = 0
+  for value in dico_reussite:
+    if dico_reussite[value] > max
+      max = dico_reussite[value]
+  return max
+    
