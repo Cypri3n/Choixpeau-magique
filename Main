@@ -40,13 +40,14 @@ https://github.com/Cypri3n/Choixpeau-magique/main
 
 #import des modules
 import csv
+import math
 
 
 #Données
-with open("Caracteristiques_des_persos.csv", mode='r', encoding='utf-8') as f:
+with open("U:\Documents\A mini projet\Caracteristiques_des_persos (1).csv", mode='r', encoding='utf-8') as f:
   reader = csv.DictReader(f,delimiter=';')
   characteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
-with open("Characters.csv", mode='r', encoding='utf-8') as f:
+with open("U:\Documents\A mini projet\Characters.csv", mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f, delimiter=';')
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]
 complete_tab = []
@@ -102,9 +103,9 @@ def verification_croisee(max_k):
             if predict_house(personnage, k) == house_tab[personnage]['House']:
                 dico_reussites[k] += 1
 
-  max = 0
-  for value in dico_reussite:
-    if dico_reussite[value] > max
-      max = dico_reussite[value]
-  return max
+    max = 0
+    for value in dico_reussite:
+        if dico_reussite[value] > max:
+            max = dico_reussite[value]
+    return max
     
