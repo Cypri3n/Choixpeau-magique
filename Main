@@ -40,14 +40,14 @@ https://github.com/Cypri3n/Choixpeau-magique/main
 
 #import des modules
 import csv
+from random import randint
 from math import sqrt
 
-
 #Données
-with open("U:\Documents\A mini projet\Caracteristiques_des_persos (1).csv", mode='r', encoding='utf-8') as f:
+with open("Caracteristiques_des_persos.csv", mode='r', encoding='utf-8') as f:
   reader = csv.DictReader(f,delimiter=';')
   caracteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
-with open("U:\Documents\A mini projet\Characters.csv", mode='r', encoding='utf-8') as f:
+with open("Characters(1).csv", mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f, delimiter=';')
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]
     
@@ -59,10 +59,6 @@ for kaggle_character in characters_tab:
         if kaggle_character['Name'] == poudlard_character['Name']:
             kaggle_character.update(poudlard_character)
             house_tab.append(kaggle_character)  
-
-print(house_tab)
-
-profil = {'Courage': 1, 'Ambition': 2, 'Intelligence': 5, 'Good': 3}
 
 # Distance 
 
@@ -77,51 +73,51 @@ def ajout_distances(tab, joueur_inconnu):
         joueur['Distance'] = distance(joueur_inconnu, joueur)
     return tab
 
-calimero = {'Courage': 1, 'Ambition': 2, 'Intelligence': 5, 'Good': 3}
+Jean = {'Courage': 1, 'Ambition': 2, 'Intelligence': 5, 'Good': 3}
 
  
-house_tab = ajout_distances(house_tab, calimero)
+house_tab = ajout_distances(house_tab, Jean)
 
-print(house_tab)
+k = 3
 
+voisins = sorted(house_tab, key=lambda x: x['Distance'])
 
+def best_house(tab):
+    postes = {}
+    for voisin in tab:
+        if voisin['House'] in postes:
+            postes[voisin['House']] += 1
+        else:
+            postes[voisin['House']] = 1
+    print(postes)
+    maximum = 0
+    for house, nb in postes.items():
+        if nb > maximum:
+            maximum = nb
+            top_house = house
+    return top_house
 
-
-
-
-
-
-'''
-# Prédiction de la maison du profile cible
-def predict_house(perso_cible, voisin, k):
-
-  #calcul distances
-  distances = distance(perso_cible, voisin)
-  sorted_neighbors = sorted(distances.items(), key=lambda x: x[1])[:k] 
-
-  # Extract houses of the k nearest neighbors
-  neighbor_houses = [house for profile, house in sorted_neighbors]
-  # Prédit la maison en fonction des maisons les plus communes de kkpv
-  predicted_house = max(set(neighbor_houses), key=neighbor_houses.count)
-  
-  return predicted_house
-
-
-
+print(best_house(voisins[:k]))
 
 # Vérification croisée
 
-def verification_croisee(max_k):
-    dico_reussite = {k: 0 for k in range(max_k)}  # Use a dictionary comprehension to initialize dico_reussites
+# Extraction d'un tiers des données pour test de validation  
+def creation_donnees_test(tab):
+    joueurs_test = []
+    copie_joueurs = house_tab[:]
+    for _ in range(len(copie_joueurs) // 4):
+        joueurs_test.append(copie_joueurs.pop(randint(0, len(copie_joueurs) - 1)))
+    return joueurs_test, copie_joueurs
 
-    for k in range(max_k):
-        for personnage in characters_list:
-            if predict_house(personnage, k) == house_tab[personnage]['House']:
-                dico_reussite[k] += 1
+nb_tests = 100
 
-    max = 0
-    for value in dico_reussite:
-        if dico_reussite[value] > max:
-            max = dico_reussite[value]
-    return max
- '''  
+for k in range(1, 31):
+    bingo = 0
+    for test in range(nb_tests):
+        joueurs_test, joueurs_reference = creation_donnees_test(house_tab)
+        for joueur_cible in joueurs_test:
+            joueurs_reference = ajout_distances(joueurs_reference, joueur_cible)
+            other_voisins = sorted(joueurs_reference, key=lambda x: x['Distance'])
+            if best_house(other_voisins[:k]) == joueur_cible['House']:
+                bingo += 1
+    print(f"Pourcentage de réussite avec k = {k} : {round(bingo / len(joueurs_test))}")
