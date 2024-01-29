@@ -44,10 +44,10 @@ from random import randint
 from math import sqrt
 
 #Données
-with open("Caracteristiques_des_persos.csv", mode='r', encoding='utf-8') as f:
+with open("U:\Documents\A mini projet\Caracteristiques_des_persos (1).csv", mode='r', encoding='utf-8') as f:
   reader = csv.DictReader(f,delimiter=';')
   caracteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
-with open("Characters(1).csv", mode='r', encoding='utf-8') as f:
+with open("U:\Documents\A mini projet\Characters.csv", mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f, delimiter=';')
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]
     
@@ -63,41 +63,60 @@ for kaggle_character in characters_tab:
 # Distance 
 
 def distance(perso_cible, voisin):
-    return sqrt((int(voisin['Courage']) - int(perso_cible['Courage']))**2 + 
-    (int(voisin['Ambition']) - int(perso_cible['Ambition']))**2 + \
+    return sqrt( (int(voisin['Courage']) - int(perso_cible['Courage']))**2 + 
+    (int(voisin['Ambition']) - int(perso_cible['Ambition']))**2 + 
     (int(voisin['Intelligence']) - int(perso_cible['Intelligence']))**2 + 
-    (int(voisin['Good']) - int(perso_cible['Good'])**2))
+    (int(voisin['Good']) - int(perso_cible['Good']))**2)
 
 def ajout_distances(tab, joueur_inconnu):
     for joueur in tab:
         joueur['Distance'] = distance(joueur_inconnu, joueur)
     return tab
 
-Jean = {'Courage': 1, 'Ambition': 2, 'Intelligence': 5, 'Good': 3}
-
- 
-house_tab = ajout_distances(house_tab, Jean)
-
-k = 3
-
-voisins = sorted(house_tab, key=lambda x: x['Distance'])
-
 def best_house(tab):
-    postes = {}
+    houses = {}
     for voisin in tab:
-        if voisin['House'] in postes:
-            postes[voisin['House']] += 1
+        if voisin['House'] in houses:
+            houses[voisin['House']] += 1
         else:
-            postes[voisin['House']] = 1
-    print(postes)
+            houses[voisin['House']] = 1
     maximum = 0
-    for house, nb in postes.items():
+    for house, nb in houses.items():
         if nb > maximum:
             maximum = nb
             top_house = house
     return top_house
 
-print(best_house(voisins[:k]))
+new_students = [{'Courage': 9, 'Ambition': 2, 'Intelligence': 8, 'Good': 9},
+           {'Courage': 6, 'Ambition': 7, 'Intelligence': 8, 'Good': 7},
+           {'Courage': 3, 'Ambition': 8, 'Intelligence': 6, 'Good': 3},
+           {'Courage': 2, 'Ambition': 3, 'Intelligence': 7, 'Good': 8},
+           {'Courage': 3, 'Ambition': 4, 'Intelligence': 8, 'Good': 8}]
+
+k = 5
+
+# Profil par défauts
+for student in new_students:
+    house_tab = ajout_distances(house_tab, student)
+    neighbors = sorted(house_tab, key=lambda x: x['Distance'])
+    print(f"Pour un profil de {student}, on a :")
+    for neighbor in neighbors[:k]:
+        print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
+    print(f"et la maison est : {best_house(neighbors[:k])} !\n")
+
+# Profil utilisateur 
+student_courage = input("Quelle est votre courage: ")
+student_ambition = input("Quelle est votre ambition: ")
+student_intelligence = input("Quelle est votre intelligence: ")
+student_good = input("Quelle est votre bien: ")
+student_user = {'Courage': student_courage, 'Ambition': student_ambition, 'Intelligence': student_intelligence, 'Good': student_good}
+
+house_tab = ajout_distances(house_tab, student_user)
+neighbors = sorted(house_tab, key=lambda x: x['Distance'])
+print("\nPour votre profil, on a :")
+for neighbor in neighbors[:k]:
+    print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
+print(f"et votre maison est : {best_house(neighbors[:k])} !\n")
 
 # Vérification croisée
 
