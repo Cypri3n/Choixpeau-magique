@@ -5,30 +5,22 @@ LE CHOIXPEAU MAGIQUE
 REGLES:
 
 
-
-
-BONUS:
-Le jeu possède également une interface graphique 
-
-
-
-
 AUTEURS:
+Ewen Le Grand
 Cyprien Venard
 Martin Ray
-Ewen Legrand
 
 
 LICENCE:
-Aucune
+CC-BY-NC-SA
 
 
 VERSION:
-0.1
+1.8.1
 
 
 DATE DE DERNIERE REVISION:
-08/01/2024
+29/01/2024
 
 
 ADRESSE GITHUB: 
@@ -38,16 +30,29 @@ https://github.com/Cypri3n/Choixpeau-magique/main
 
 # coding: utf-8
 
-#import des modules
+# Import des modules
 import csv
-from random import randint
+import time
 from math import sqrt
+from random import randint
 
-#Données
-with open("U:\Documents\A mini projet\Caracteristiques_des_persos (1).csv", mode='r', encoding='utf-8') as f:
+# Variables
+yellow = "\033[93m"  # YELLOW
+green = "\033[92m"  # GREEN
+red = "\033[91m"  # RED
+blue = "\033[0;34m" # BLUE
+purple = "\033[0;35m" # PURPLE
+
+reset = "\033[0m"  # RESET
+bold = "\033[1m" # BOLD
+italic = "\033[3m" # ITALIC
+underline = "\033[4m"# UNDERLINE
+
+# Extraction des données
+with open("Caracteristiques_des_persos.csv", mode='r', encoding='utf-8') as f:
   reader = csv.DictReader(f,delimiter=';')
   caracteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
-with open("U:\Documents\A mini projet\Characters.csv", mode='r', encoding='utf-8') as f:
+with open("Characters.csv", mode='r', encoding='utf-8') as f:
     reader = csv.DictReader(f, delimiter=';')
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]
     
@@ -61,18 +66,18 @@ for kaggle_character in characters_tab:
             house_tab.append(kaggle_character)  
 
 # Distance 
-
 def distance(perso_cible, voisin):
     return sqrt( (int(voisin['Courage']) - int(perso_cible['Courage']))**2 + 
     (int(voisin['Ambition']) - int(perso_cible['Ambition']))**2 + 
     (int(voisin['Intelligence']) - int(perso_cible['Intelligence']))**2 + 
     (int(voisin['Good']) - int(perso_cible['Good']))**2)
 
-def ajout_distances(tab, joueur_inconnu):
-    for joueur in tab:
-        joueur['Distance'] = distance(joueur_inconnu, joueur)
-    return tab
+def ajout_distances(students_tab, unknow_student):
+    for student in students_tab:
+        student['Distance'] = distance(unknow_student, student)
+    return students_tab
 
+# Algorithme des kppv
 def best_house(tab):
     houses = {}
     for voisin in tab:
@@ -87,22 +92,84 @@ def best_house(tab):
             top_house = house
     return top_house
 
+# Vérification croisée
+def validation_croisée():
+    nb_tests = 100
+    best_perf = 0
+    best_k = 0
+
+    # Extraction d'un tiers des données pour test de validation  
+    def creation_donnees_test(tab):
+        joueurs_test = []
+        copie_joueurs = house_tab[:]
+        for _ in range(len(copie_joueurs) // 4):
+            joueurs_test.append(copie_joueurs.pop(randint(0, len(copie_joueurs) - 1)))
+        return joueurs_test, copie_joueurs
+
+    for k in range(1, 31):
+        bingo = 0
+        for test in range(nb_tests):
+            joueurs_test, joueurs_reference = creation_donnees_test(house_tab)
+            for joueur_cible in joueurs_test:
+                joueurs_reference = ajout_distances(joueurs_reference, joueur_cible)
+                other_voisins = sorted(joueurs_reference, key=lambda x: x['Distance'])
+                if best_house(other_voisins[:k]) == joueur_cible['House']:
+                    bingo += 1
+        perf = round(bingo / len(joueurs_test))
+        if perf > best_perf:
+            best_perf = perf
+            best_k = k
+        print(f"Pourcentage de réussite avec k = {k} : {purple}{perf} %{reset}.")
+
+    print(f"Meilleur k : {red}{best_k}{reset}, avec {purple}{best_perf} %{reset} de réussite.\n")
+    time.sleep(2.5)
+    return best_k
+
+answer = input("Voulez-vous faire une validation croisée ou définir k à 5 ?\nvalidation croisée : 1\nk à 5 : 2\n--> ")
+
+if answer == '1':
+    best_k = validation_croisée()
+else:
+    best_k = 5
+
+def printing(neighbor):
+    if neighbor['House'] == 'Gryffindor':
+        print(f"{italic}{neighbor['Name']}{reset}, de {red}{neighbor['House']}{reset}, à {purple}{neighbor['Distance']}{reset} de distance,")
+    elif neighbor['House'] == 'Ravenclaw':
+        print(f"{italic}{neighbor['Name']}{reset}, de {blue}{neighbor['House']}{reset}, à {purple}{neighbor['Distance']}{reset} de distance,")
+    elif neighbor['House'] == 'Hufflepuff':
+        print(f"{italic}{neighbor['Name']}{reset}, de {yellow}{neighbor['House']}{reset}, à {purple}{neighbor['Distance']}{reset} de distance,")
+    elif neighbor['House'] == 'Slytherin':
+        print(f"{italic}{neighbor['Name']}{reset}, de {green}{neighbor['House']}{reset}, à {purple}{neighbor['Distance']}{reset} de distance,")
+    time.sleep(0.5)
+
+def printing_house(tab, k):
+    if best_house(tab[:k]) == 'Gryffindor':
+        print(f"=> La maison est donc : {red}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
+        #print(house_tab[['Minerva McGonagall']])
+    elif best_house(tab[:k]) == 'Ravenclaw':
+        print(f"=> La maison est donc : {blue}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
+    elif best_house(tab[:k]) == 'Hufflepuff':
+        print(f"=> La maison est donc : {yellow}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
+    elif best_house(tab[:k]) == 'Slytherin':
+        print(f"=> La maison est donc : {green}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
+
+
+# Profil par défauts
 new_students = [{'Courage': 9, 'Ambition': 2, 'Intelligence': 8, 'Good': 9},
            {'Courage': 6, 'Ambition': 7, 'Intelligence': 8, 'Good': 7},
            {'Courage': 3, 'Ambition': 8, 'Intelligence': 6, 'Good': 3},
            {'Courage': 2, 'Ambition': 3, 'Intelligence': 7, 'Good': 8},
            {'Courage': 3, 'Ambition': 4, 'Intelligence': 8, 'Good': 8}]
 
-k = 5
-
-# Profil par défauts
 for student in new_students:
     house_tab = ajout_distances(house_tab, student)
     neighbors = sorted(house_tab, key=lambda x: x['Distance'])
     print(f"Pour un profil de {student}, on a :")
-    for neighbor in neighbors[:k]:
-        print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
-    print(f"et la maison est : {best_house(neighbors[:k])} !\n")
+    for neighbor in neighbors[:best_k]:
+        printing(neighbor)
+    printing_house(neighbors, best_k)
+    time.sleep(2)
 
 # Profil utilisateur 
 student_courage = input("Quelle est votre courage: ")
@@ -114,29 +181,7 @@ student_user = {'Courage': student_courage, 'Ambition': student_ambition, 'Intel
 house_tab = ajout_distances(house_tab, student_user)
 neighbors = sorted(house_tab, key=lambda x: x['Distance'])
 print("\nPour votre profil, on a :")
-for neighbor in neighbors[:k]:
-    print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
-print(f"et votre maison est : {best_house(neighbors[:k])} !\n")
-
-# Vérification croisée
-
-# Extraction d'un tiers des données pour test de validation  
-def creation_donnees_test(tab):
-    joueurs_test = []
-    copie_joueurs = house_tab[:]
-    for _ in range(len(copie_joueurs) // 4):
-        joueurs_test.append(copie_joueurs.pop(randint(0, len(copie_joueurs) - 1)))
-    return joueurs_test, copie_joueurs
-
-nb_tests = 100
-
-for k in range(1, 31):
-    bingo = 0
-    for test in range(nb_tests):
-        joueurs_test, joueurs_reference = creation_donnees_test(house_tab)
-        for joueur_cible in joueurs_test:
-            joueurs_reference = ajout_distances(joueurs_reference, joueur_cible)
-            other_voisins = sorted(joueurs_reference, key=lambda x: x['Distance'])
-            if best_house(other_voisins[:k]) == joueur_cible['House']:
-                bingo += 1
-    print(f"Pourcentage de réussite avec k = {k} : {round(bingo / len(joueurs_test))}")
+for neighbor in neighbors[:best_k]:
+    printing(neighbor)
+time.sleep(1)
+printing_house(neighbors, best_k)
