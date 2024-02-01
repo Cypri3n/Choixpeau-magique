@@ -17,7 +17,7 @@ VERSION:
 
 
 DATE DE DERNIERE REVISION:
-31/01/2024
+01/02/2024
 
 
 ADRESSE GITHUB: 
@@ -36,6 +36,7 @@ from random import randint
 # VARIABLES
 # Table des personnages et leurs caractéristiques
 house_tab = []
+
 # Profil par défaut
 new_students = [{'Courage': 9, 'Ambition': 2, 'Intelligence': 8, 'Good': 9},
            {'Courage': 6, 'Ambition': 7, 'Intelligence': 8, 'Good': 7},
@@ -49,7 +50,6 @@ green = "\033[92m"  # GREEN
 red = "\033[91m"  # RED
 blue = "\033[0;34m" # BLUE
 purple = "\033[0;35m" # PURPLE
-
 bold = "\033[1m" # BOLD
 italic = "\033[3m" # ITALIC
 underline = "\033[4m"# UNDERLINE
