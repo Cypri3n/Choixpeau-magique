@@ -21,7 +21,7 @@ DATE DE DERNIERE REVISION:
 
 
 ADRESSE GITHUB: 
-https://github.com/Cypri3n/Choixpeau-magique/main
+https://github.com/Cypri3n/Choixpeau-magique/tree/main
 
 '''
 
