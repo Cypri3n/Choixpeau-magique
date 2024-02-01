@@ -34,6 +34,15 @@ from math import sqrt
 from random import randint
 
 # VARIABLES
+# Table des personnages et leurs caractéristiques
+house_tab = []
+# Profil par défaut
+new_students = [{'Courage': 9, 'Ambition': 2, 'Intelligence': 8, 'Good': 9},
+           {'Courage': 6, 'Ambition': 7, 'Intelligence': 8, 'Good': 7},
+           {'Courage': 3, 'Ambition': 8, 'Intelligence': 6, 'Good': 3},
+           {'Courage': 2, 'Ambition': 3, 'Intelligence': 7, 'Good': 8},
+           {'Courage': 3, 'Ambition': 4, 'Intelligence': 8, 'Good': 8}]
+
 # Mise en page
 yellow = "\033[93m"  # YELLOW
 green = "\033[92m"  # GREEN
@@ -103,9 +112,19 @@ def validation_croisée():
             best_k = k
         print(f"Pourcentage de réussite avec k = {k} : {purple}{perf} %{reset}.")
 
-    print(f"Meilleur k : {red}{best_k}{reset}, avec {purple}{best_perf} %{reset} de réussite.\n")
-    time.sleep(2.5)
+    print(f"Meilleur k : {green}{best_k}{reset}, avec {purple}{best_perf} %{reset} de réussite.\n")
+    time.sleep(1)
+    print(f"{italic}Nous utiliserons donc k = {best_k}.{reset}\n")
+    time.sleep(2)
     return best_k
+
+# Profil de l'utilisateur
+def user_characteristics():
+        student_courage = input("Quelle est votre courage : ")
+        student_ambition = input("Quelle est votre ambition : ")
+        student_intelligence = input("Quelle est votre intelligence : ")
+        student_good = input("Quelle est votre bien : ")
+        return {'Courage': student_courage, 'Ambition': student_ambition, 'Intelligence': student_intelligence, 'Good': student_good}
 
 # Affichage
 def validation_wanted_or_not():
@@ -113,6 +132,7 @@ def validation_wanted_or_not():
     if answer_validation == '1':
         return validation_croisée()
     else:
+        print(f"\n{italic}Nous utiliserons donc k = 5.{reset}\n")
         return 5
 
 def printing(neighbor):
@@ -137,6 +157,9 @@ def printing_house(tab, k):
     elif best_house(tab[:k]) == 'Slytherin':
         print(f"=> La maison est donc : {green}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
 
+def continue_or_stop():
+    return input(f"Souhaitez-vous continuez ?\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
+
 def leaving():
     print(f"{italic}Vous avez décidé de nous quitter.{reset}")
     time.sleep(1.5)
@@ -155,7 +178,6 @@ with open("Characters.csv", mode='r', encoding='utf-8') as f:
     characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]    
 
 # Fusion des tables
-house_tab = []
 for kaggle_character in characters_tab:
     for poudlard_character in caracteristiques_tab:
         if kaggle_character['Name'] == poudlard_character['Name']:
@@ -164,18 +186,12 @@ for kaggle_character in characters_tab:
 
 
 # IHM
-print(f"\nBienvenue à Poudlard, que souhaitez-vous faire ?\n")
-answer = input(f"Voir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
+answer = input(f"\nBienvenue à Poudlard, que souhaitez-vous faire ?\n\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
 
 while answer in ('1', '2'):
     if answer == '1':
         # Profil par défauts
         k = validation_wanted_or_not()
-        new_students = [{'Courage': 9, 'Ambition': 2, 'Intelligence': 8, 'Good': 9},
-           {'Courage': 6, 'Ambition': 7, 'Intelligence': 8, 'Good': 7},
-           {'Courage': 3, 'Ambition': 8, 'Intelligence': 6, 'Good': 3},
-           {'Courage': 2, 'Ambition': 3, 'Intelligence': 7, 'Good': 8},
-           {'Courage': 3, 'Ambition': 4, 'Intelligence': 8, 'Good': 8}]
         for student in new_students:
             house_tab = ajout_distances(house_tab, student)
             neighbors = sorted(house_tab, key=lambda x: x['Distance'])
@@ -184,19 +200,13 @@ while answer in ('1', '2'):
                 printing(neighbor)
             printing_house(neighbors, k)
             time.sleep(2)
-        print("Souhaitez-vous continuez ?")
-        answer = input(f"Voir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
+        answer = continue_or_stop()
     else:
         # Profil utilisateur 
         k = validation_wanted_or_not()
-        print("\nVeuillez vous noter sur chacune de ces caractéristiques avec un chiffre entre 0 et 9...")
+        print("Veuillez vous noter sur chacune de ces caractéristiques avec un chiffre entre 0 et 9...")
         time.sleep(1.5)
-        student_courage = input("Quelle est votre courage : ")
-        student_ambition = input("Quelle est votre ambition : ")
-        student_intelligence = input("Quelle est votre intelligence : ")
-        student_good = input("Quelle est votre bien : ")
-        student_user = {'Courage': student_courage, 'Ambition': student_ambition, 'Intelligence': student_intelligence, 'Good': student_good}
-
+        student_user = user_characteristics()
         house_tab = ajout_distances(house_tab, student_user)
         neighbors = sorted(house_tab, key=lambda x: x['Distance'])
         print("\nPour votre profil, on a :")
@@ -204,7 +214,7 @@ while answer in ('1', '2'):
             printing(neighbor)
         time.sleep(1)
         printing_house(neighbors, k)
-        print("Souhaitez-vous continuez ?")
-        answer = input(f"Voir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
+        time.sleep(2)
+        answer = continue_or_stop()
 
 leaving()
