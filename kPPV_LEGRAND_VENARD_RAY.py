@@ -1,9 +1,9 @@
 '''
 LE CHOIXPEAU MAGIQUE
 
-Ce programme prédit la maison d'un profil selon ses caractéristiques à partir d'un algorithme de k plus proches voisins,
-Et peut être executé avec des profils préexistants ou avec des profils saisi par l'utilisateur. 
-Il possède également un proccessus de validaion croisée visant à garantir son efficacité.
+Ce programme prédit la maison d'un profil selon ses caractéristiques à partir d'un algorithme de k plus proches voisins.
+Il peut être executé avec des profils préexistants ou avec des profils saisi par l'utilisateur. 
+Il possède également un processus de validation croisée visant à maximiser son efficacité en choisissant un k optimale.
 
 AUTEURS:
 Ewen Le Grand
