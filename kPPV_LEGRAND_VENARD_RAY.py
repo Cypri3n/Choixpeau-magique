@@ -1,10 +1,12 @@
 '''
 LE CHOIXPEAU MAGIQUE
-
+Ce programme prédit la maison d'un profil selon ses caractéristiques à partir d'un algorithme de k plus proches voisins,
+Et peut être executé avec des profils préexistants. 
+Il possède également un proccessus de validaion croisée visant à garantir son efficacité.
 
 AUTEURS:
-Ewen Le Grand
 Cyprien Venard
+Ewen Le Grand
 Martin Ray
 
 
@@ -120,10 +122,10 @@ def validation_croisée():
 
 # Profil de l'utilisateur
 def user_characteristics():
-        student_courage = input("Quelle est votre courage : ")
-        student_ambition = input("Quelle est votre ambition : ")
-        student_intelligence = input("Quelle est votre intelligence : ")
-        student_good = input("Quelle est votre bien : ")
+        student_courage = input("Quelle est votre courage ?")
+        student_ambition = input("Quelle est votre ambition ?")
+        student_intelligence = input("Quelle est votre intelligence ?")
+        student_good = input("Quelle est votre bontée ?")
         return {'Courage': student_courage, 'Ambition': student_ambition, 'Intelligence': student_intelligence, 'Good': student_good}
 
 # Affichage
@@ -186,7 +188,8 @@ for kaggle_character in characters_tab:
 
 
 # IHM
-answer = input(f"\nBienvenue à Poudlard, que souhaitez-vous faire ?\n\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
+answer = input(f"\nBienvenue à Poudlard, que souhaitez-vous faire ?\n\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle\
+maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
 
 while answer in ('1', '2'):
     if answer == '1':
