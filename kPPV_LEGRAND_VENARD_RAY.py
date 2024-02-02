@@ -1,12 +1,13 @@
 '''
 LE CHOIXPEAU MAGIQUE
+
 Ce programme prédit la maison d'un profil selon ses caractéristiques à partir d'un algorithme de k plus proches voisins,
-Et peut être executé avec des profils préexistants. 
+Et peut être executé avec des profils préexistants ou avec des profils saisi par l'utilisateur. 
 Il possède également un proccessus de validaion croisée visant à garantir son efficacité.
 
 AUTEURS:
-Cyprien Venard
 Ewen Le Grand
+Cyprien Venard
 Martin Ray
 
 
@@ -15,11 +16,11 @@ CC-BY-NC-SA
 
 
 VERSION:
-1.8.1
+1.8.7
 
 
 DATE DE DERNIERE REVISION:
-01/02/2024
+02/02/2024
 
 
 ADRESSE GITHUB: 
@@ -73,10 +74,10 @@ def distance(perso_cible, voisin):
 
 def ajout_distances(students_tab, unknow_student):
     '''
-    Calcule les distances pour chaque personnages et l'ajoute à une table
-    ENTREES : Table contenant les distances de chaque personnage
-              Dictionnaire contenant les caractéristiques du personnage voisin  
-    SORTIES : Table de dictionnairees contenant les distances entre le perso cible et tous les autres
+    Ajoute les distances entre le profil cible et chaque personnage et l'ajoute à la table des profils.
+    ENTREES : Table (liste de dictionnaires) contenant tous les profils
+              Dictionnaire contenant les caractéristiques du profil cible
+    SORTIES : Table (liste de dictionnaires) contenant les distances entre le profil cible et chaque personnage
     '''
     for student in students_tab:
         student['Distance'] = distance(unknow_student, student)
@@ -85,9 +86,9 @@ def ajout_distances(students_tab, unknow_student):
 # Algorithme des kppv
 def best_house(tab):
     '''
-    Determine la maison adaptée au personnage cible
-    ENTREES : ********pas trouvé
-    SORTIES : Renvoie le nom de la maison trouvée
+    Determine la maison la plus adapté pour le profil cible
+    ENTREES : Table (liste de dictionnaires) contenant tous les profils et leur distance avec le profil cible.
+    SORTIES : String contenant le nom de la maison trouvée
     '''
     houses = {}
     for voisin in tab:
@@ -105,9 +106,9 @@ def best_house(tab):
 # Vérification croisée
 def validation_croisée():
     '''
-    Détermine la valeur de k la plus efficace 
-    ENTREES : Pas d'entrées
-    SORTIES : Pourcentage de réussitepour chaque k 
+    Détermine la valeur de k la plus efficace et affiche le pourcentage de réussite pour chaque k.
+    ENTREES : None
+    SORTIES : Entier représentant la meilleur valeur de k.        
     '''
     nb_tests = 100
     best_perf = 0
@@ -115,6 +116,12 @@ def validation_croisée():
 
     # Extraction d'un tiers des données pour test de validation  
     def creation_donnees_test(tab):
+        '''
+        Extrait des profils de la table des profils pour la validation croisée.
+        ENTREES : Table (liste de dictionnaires) contenant tous les profils
+        SORTIES : Table (liste de dictionnaires) contenant les profils des joueurs a tester
+                  Table (liste de dictionnaires) contenant tous les profils des joueurs sauf ceux a tester
+        '''
         joueurs_test = []
         copie_joueurs = house_tab[:]
         for _ in range(len(copie_joueurs) // 4):
@@ -144,14 +151,25 @@ def validation_croisée():
 
 # Profil de l'utilisateur
 def user_characteristics():
-        student_courage = input("Quelle est votre courage ?")
-        student_ambition = input("Quelle est votre ambition ?")
-        student_intelligence = input("Quelle est votre intelligence ?")
-        student_good = input("Quelle est votre bontée ?")
-        return {'Courage': student_courage, 'Ambition': student_ambition, 'Intelligence': student_intelligence, 'Good': student_good}
+    '''
+    Crée le profil saisi par l'utilisateur.
+    ENTREES : None
+    SORTIES : Dictionnaire contenant les caractéristiques saisi par l'utilisateur
+    '''
+    student_courage = input("Quelle est votre courage : ")
+    student_ambition = input("Quelle est votre ambition : ")
+    student_intelligence = input("Quelle est votre intelligence : ")
+    student_good = input("Quelle est votre bontée : ")
+    return {'Courage': student_courage, 'Ambition': student_ambition, 'Intelligence': student_intelligence, 'Good': student_good}
 
 # Affichage
 def validation_wanted_or_not():
+    '''
+    Pose la question à l'utilisateur de faire une validation croisée ou pas.
+    ENTREES : None
+    SORTIES : Fonction validation_croisée
+              Entier représentant le k à utiliser
+    '''
     answer_validation = input(f"\nVoulez-vous faire une validation croisée ou définir k à 5 ?\nFaire une validation croisée => {bold}entrez 1{reset}\nDéfinir k à 5 => {bold}entrez 2{reset}\n => ")
     if answer_validation == '1':
         return validation_croisée()
@@ -160,6 +178,11 @@ def validation_wanted_or_not():
         return 5
 
 def printing(neighbor):
+    '''
+    Affiche les k plus proches voisins, leur maison et leur distance avec le profil cible.
+    ENTREES : Table (liste de dictionnaires) contenant le profil des k plus proche voisins
+    SORTIES : None
+    '''
     if neighbor['House'] == 'Gryffindor':
         print(f"{italic}{neighbor['Name']}{reset}, de {red}{neighbor['House']}{reset}, à {purple}{neighbor['Distance']}{reset} de distance,")
     elif neighbor['House'] == 'Ravenclaw':
@@ -171,9 +194,14 @@ def printing(neighbor):
     time.sleep(0.5)
 
 def printing_house(tab, k):
+    '''
+    Affiche la maison du profil cible.
+    ENTREES : Table (liste de dictionnaires) contenant tous les profils et leur distance avec le profil cible
+              Entier représentant la valeur de k
+    SORTIES : None
+    '''
     if best_house(tab[:k]) == 'Gryffindor':
         print(f" => La maison est donc : {red}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
-        #print(house_tab[['Minerva McGonagall']])
     elif best_house(tab[:k]) == 'Ravenclaw':
         print(f"=> La maison est donc : {blue}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
     elif best_house(tab[:k]) == 'Hufflepuff':
@@ -182,9 +210,19 @@ def printing_house(tab, k):
         print(f"=> La maison est donc : {green}{bold}{underline}{best_house(tab[:k])}{reset} !\n")
 
 def continue_or_stop():
+    '''
+    Demande à l'utilisateur s'il veut continuer ou arrêter le programme.
+    ENTREES : None
+    SORTIES : String représentant le choix de l'utilisateur
+    '''
     return input(f"Souhaitez-vous continuez ?\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
 
 def leaving():
+    '''
+    Petite procédure rigolote utilisé lorsque l'utilisateur arrête le programme. Affiche 3 phrases.
+    ENTREES : None
+    SORTIES : None
+    '''
     print(f"{italic}Vous avez décidé de nous quitter.{reset}")
     time.sleep(1.5)
     print("\nLe poudlard express vous attend pour rentrer.")
@@ -210,8 +248,7 @@ for kaggle_character in characters_tab:
 
 
 # IHM
-answer = input(f"\nBienvenue à Poudlard, que souhaitez-vous faire ?\n\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle\
-maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
+answer = input(f"\nBienvenue à Poudlard, que souhaitez-vous faire ?\n\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramenera chez les moldus.{reset}\n => ")
 
 while answer in ('1', '2'):
     if answer == '1':
