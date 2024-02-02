@@ -60,18 +60,35 @@ reset = "\033[0m"  # RESET
 # FONCTIONS ET PROCEDURES
 # Distance 
 def distance(perso_cible, voisin):
+    '''
+    Calcul de la distance (kppv)
+    ENTREES : Dictionnaire contenant les caractéristiques du personnage cible
+              Dictionnaire contenant les caractéristiques du personnage voisin  
+    SORTIES : Valeur de la distance sous forme d'entier
+    '''
     return sqrt( (int(voisin['Courage']) - int(perso_cible['Courage']))**2 + 
     (int(voisin['Ambition']) - int(perso_cible['Ambition']))**2 + 
     (int(voisin['Intelligence']) - int(perso_cible['Intelligence']))**2 + 
     (int(voisin['Good']) - int(perso_cible['Good']))**2)
 
 def ajout_distances(students_tab, unknow_student):
+    '''
+    Calcule les distances pour chaque personnages et l'ajoute à une table
+    ENTREES : Table contenant les distances de chaque personnage
+              Dictionnaire contenant les caractéristiques du personnage voisin  
+    SORTIES : Table de dictionnairees contenant les distances entre le perso cible et tous les autres
+    '''
     for student in students_tab:
         student['Distance'] = distance(unknow_student, student)
     return students_tab
 
 # Algorithme des kppv
 def best_house(tab):
+    '''
+    Determine la maison adaptée au personnage cible
+    ENTREES : ********pas trouvé
+    SORTIES : Renvoie le nom de la maison trouvée
+    '''
     houses = {}
     for voisin in tab:
         if voisin['House'] in houses:
@@ -87,6 +104,11 @@ def best_house(tab):
 
 # Vérification croisée
 def validation_croisée():
+    '''
+    Détermine la valeur de k la plus efficace 
+    ENTREES : Pas d'entrées
+    SORTIES : Pourcentage de réussitepour chaque k 
+    '''
     nb_tests = 100
     best_perf = 0
     best_k = 0
