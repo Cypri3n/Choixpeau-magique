@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+  <head>
+
+    <meta charset="UTF-8" />
+    <title>NOTRE CHOIXPEAU</title>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+    <link rel="stylesheet" href="caca.css">
+  
+  </head>
+
+  <body onload="brython()">
+    <!--
+    <script type="text/python">
+     
+# Import des modules
+import csv
+import time
+from math import sqrt
+from random import randint
+
+# VARIABLES
+# Table des personnages et leurs caractéristiques
+house_tab = []
+
+# Profil par défaut
+new_students = [{'Courage': 9, 'Ambition': 2, 'Intelligence': 8, 'Good': 9},
+           {'Courage': 6, 'Ambition': 7, 'Intelligence': 8, 'Good': 7},
+           {'Courage': 3, 'Ambition': 8, 'Intelligence': 6, 'Good': 3},
+           {'Courage': 2, 'Ambition': 3, 'Intelligence': 7, 'Good': 8},
+           {'Courage': 3, 'Ambition': 4, 'Intelligence': 8, 'Good': 8}]
+
+
+# FONCTIONS ET PROCEDURES
+# Distance 
+def distance(perso_cible, voisin):
+    return sqrt( (int(voisin['Courage']) - int(perso_cible['Courage']))**2 + 
+    (int(voisin['Ambition']) - int(perso_cible['Ambition']))**2 + 
+    (int(voisin['Intelligence']) - int(perso_cible['Intelligence']))**2 + 
+    (int(voisin['Good']) - int(perso_cible['Good']))**2)
+
+def ajout_distances(students_tab, unknow_student):
+    for student in students_tab:
+        student['Distance'] = distance(unknow_student, student)
+    return students_tab
+
+# Algorithme des kppv
+def best_house(tab):
+    houses = {}
+    for voisin in tab:
+        if voisin['House'] in houses:
+            houses[voisin['House']] += 1
+        else:
+            houses[voisin['House']] = 1
+    maximum = 0
+    for house, nb in houses.items():
+        if nb > maximum:
+            maximum = nb
+            top_house = house
+    return top_house
+
+# Vérification croisée
+def validation_croisée():
+    nb_tests = 100
+    best_perf = 0
+    best_k = 0
+
+    # Extraction d'un tiers des données pour test de validation  
+    def creation_donnees_test(tab):
+        joueurs_test = []
+        copie_joueurs = house_tab[:]
+        for _ in range(len(copie_joueurs) // 4):
+            joueurs_test.append(copie_joueurs.pop(randint(0, len(copie_joueurs) - 1)))
+        return joueurs_test, copie_joueurs
+
+    for k in range(1, 31):
+        bingo = 0
+        for test in range(nb_tests):
+            joueurs_test, joueurs_reference = creation_donnees_test(house_tab)
+            for joueur_cible in joueurs_test:
+                joueurs_reference = ajout_distances(joueurs_reference, joueur_cible)
+                other_voisins = sorted(joueurs_reference, key=lambda x: x['Distance'])
+                if best_house(other_voisins[:k]) == joueur_cible['House']:
+                    bingo += 1
+        perf = round(bingo / len(joueurs_test))
+        if perf > best_perf:
+            best_perf = perf
+            best_k = k
+        print(f"Pourcentage de réussite avec k = {k} : {perf} %.")
+
+    print(f"Meilleur k : {best_k}, avec {best_perf} % de réussite.\n")
+    time.sleep(1)
+    print(f"Nous utiliserons donc k = {best_k}.\n")
+    time.sleep(2)
+    return best_k
+
+# Profil de l'utilisateur
+def user_characteristics():
+        student_courage = input("Quelle est votre courage : ")
+        student_ambition = input("Quelle est votre ambition : ")
+        student_intelligence = input("Quelle est votre intelligence : ")
+        student_good = input("Quelle est votre bien : ")
+        return {'Courage': student_courage, 'Ambition': student_ambition, 'Intelligence': student_intelligence, 'Good': student_good}
+
+# Affichage
+def validation_wanted_or_not():
+    answer_validation = input(f"\nVoulez-vous faire une validation croisée ou définir k à 5 ?\nFaire une validation croisée => {bold}entrez 1{reset}\nDéfinir k à 5 => {bold}entrez 2{reset}\n => ")
+    if answer_validation == '1':
+        return validation_croisée()
+    else:
+        print(f"\nNous utiliserons donc k = 5.\n")
+        return 5
+
+def printing(neighbor):
+    if neighbor['House'] == 'Gryffindor':
+        print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
+    elif neighbor['House'] == 'Ravenclaw':
+        print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
+    elif neighbor['House'] == 'Hufflepuff':
+        print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
+    elif neighbor['House'] == 'Slytherin':
+        print(f"{neighbor['Name']}, de {neighbor['House']}, à {neighbor['Distance']} de distance,")
+    time.sleep(0.5)
+
+def printing_house(tab, k):
+    print(f"=> La maison est donc : {best_house(tab[:k])} !\n")
+
+def continue_or_stop():
+    return input(f"Souhaitez-vous continuez ?\nVoir les maisons des nouveaux élèves => entrez 1\nDéterminer quelle maison me correspond le mieux => entrez 2\nattention : tout autre choix vous ramènera chez les moldus.\n => ")
+
+def leaving():
+    print(f"Vous avez décidé de nous quitter.")
+    time.sleep(1.5)
+    print("\nLe poudlard express vous attend pour rentrer.")
+    time.sleep(1.5)
+    print("\nAu revoir !\n")
+    time.sleep(1)  
+
+# DATA
+# Extraction des données
+with open("Caracteristiques_des_persos.csv", mode='r', encoding='utf-8') as f:
+  reader = csv.DictReader(f,delimiter=';')
+  caracteristiques_tab = [{key : value for key, value in element.items()} for element in reader]
+with open("Characters.csv", mode='r', encoding='utf-8') as f:
+    reader = csv.DictReader(f, delimiter=';')
+    characters_tab = [{key : value.replace('\xa0', ' ') for key, value in element.items()} for element in reader]    
+
+# Fusion des tables
+for kaggle_character in characters_tab:
+    for poudlard_character in caracteristiques_tab:
+        if kaggle_character['Name'] == poudlard_character['Name']:
+            kaggle_character.update(poudlard_character)
+            house_tab.append(kaggle_character)  
+
+
+# IHM
+answer = input(f"\nBienvenue à Poudlard, que souhaitez-vous faire ?\n\nVoir les maisons des nouveaux élèves => {bold}entrez 1{reset}\nDéterminer quelle maison me correspond le mieux => {bold}entrez 2{reset}\n{italic}attention : tout autre choix vous ramènera chez les moldus.{reset}\n => ")
+
+while answer in ('1', '2'):
+    if answer == '1':
+        # Profil par défauts
+        k = validation_wanted_or_not()
+        for student in new_students:
+            house_tab = ajout_distances(house_tab, student)
+            neighbors = sorted(house_tab, key=lambda x: x['Distance'])
+            print(f"Pour un profil de {student}, on a :")
+            for neighbor in neighbors[:k]:
+                printing(neighbor)
+            printing_house(neighbors, k)
+            time.sleep(2)
+        answer = continue_or_stop()
+    else:
+        # Profil utilisateur 
+        k = validation_wanted_or_not()
+        print("Veuillez vous noter sur chacune de ces caractéristiques avec un chiffre entre 0 et 9...")
+        time.sleep(1.5)
+        student_user = user_characteristics()
+        house_tab = ajout_distances(house_tab, student_user)
+        neighbors = sorted(house_tab, key=lambda x: x['Distance'])
+        print("\nPour votre profil, on a :")
+        for neighbor in neighbors[:k]:
+            printing(neighbor)
+        time.sleep(1)
+        printing_house(neighbors, k)
+        time.sleep(2)
+        answer = continue_or_stop()
+
+leaving()
+    </script>
+    -->
+    
+    <center>
+      <h1> NOTRE CHOIXPEAU GIQUEMA</h1>
+
+      <div id="Layer1" style="position:absolute; left:600px; top:150px; width:136px; height:132px; z-index:1">
+        <img src="pngegg(1).png" width="400" height="341" />
+      </div>
+
+      <div id="Layer2" style="position:absolute; left:-35px; top:110px; width:1700px; height:508px; z-index:2">
+        <marquee behavior="alternate" direction="right" scrollamount="20">
+            <img src="choixpeau.png" width="400" height="341" />
+          </marquee>
+      </div>
+
+      <p>Es-tu communiste ?</p>
+      <form>
+        <div>
+          <input type="radio" id="oui" name="oui" value="oui" checked>
+          <label for="oui">oui</label>
+          <input type="radio" id="limaces" name="oui" value="limaces" checked>
+          <label for="limaces">oui</label>
+        </div>
+      </form>
+    </center>
+  </body>
+</html>

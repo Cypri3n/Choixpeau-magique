@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+  <head>
+
+    <meta charset="UTF-8" />
+    <title>┌♣♦☺☻☻♥○◘•◙</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+  </head>
+
+  <body onload="brython()">
+
+    <script type="text/python">
+      from browser import document, html
+      from random import randint
+      
+      i = randint(1, 3)
+
+      def change_texte(ev):
+        global i
+        if i == 1:
+            document["texte"].textContent = " GRYFFONDOR !"
+        elif i == 2:
+            document["texte"].textContent = " SERDAIGLE !"
+        elif i == 3:
+            document["texte"].textContent = " POUFSOUFFLE !"
+        else:
+            document["texte"].textContent = " SERPENTARD !"
+
+      document["bouton2"].bind("click", change_texte)
+
+      # Exercice 4 (approfondissement)
+      i = 0
+      def compte(ev):
+        global i
+        i += 1
+        document["bouton_compteur"].textContent = f"Vous avez cliqué {i} fois sur ce compteur"
+      document["bouton_compteur"].bind("click", compte)
+      
+    </script>
+
+    <section>
+
+      <p> Tu es un : </p>
+      <button name="button" id="bouton2">Clique pour voir ce que tu es</button>
+      <p id = "texte"> </p>
+     
+        <p> COMPTEUR :</p>
+      <button name="button" id="bouton_compteur">Compteur</button>
+    
+    
+    </section>
+  </body>
+</html>
