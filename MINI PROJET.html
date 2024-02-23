@@ -18,52 +18,32 @@
     <script type="text/python">
     from browser import html, document
 
+    dico_question = {1 : {'question' : "question_1", 'reponse_1' : "1", 'reponse_2' : "2", 'reponse_3' : "3"}, 2 : {'question' : "question_2", 'reponse_1' : "1", 'reponse_2' : "2", 'reponse_3' : "3"}, 3: {'question' : "question_3", 'reponse_1' : "1", 'reponse_2': "2", 'reponse_3' : "3"}, 4 : {'question' : "question_4", 'reponse_1' : "1", 'reponse_2' : "2", 'reponse_3' : "3"}}
     progression_question = 0
 
-    def firstquestion1(ev):
+
+    def bout(ev):
       global progression_question
-      if progression_question == 0:
-        progression_question += 1
-        document["question"].html = "Quel mouvement ? "
-        document["bouton1"].html = "Trotskiste"
-        document["bouton2"].html = "Léniniste"
-        document["bouton3"].html = "Staliniste"
+      progression_question += 1
+      document["question"].html = dico_question[progression_question]['question']
+      document["bouton1"].html = dico_question[progression_question]['reponse_1']
+      document["bouton2"].html = dico_question[progression_question]['reponse_2']
+      document["bouton3"].html = dico_question[progression_question]['reponse_3']
 
-    def firstquestion2(ev):
-      global progression_question
-      if progression_question == 0:
-        progression_question += 1
-        document["question"].html = "Alors es tu nazi ? "
-        document["bouton1"].html = "OUI"
-        document["bouton2"].html = "NON"
-        document["bouton3"].html = "PEUT-ETRE"
+    def byebye(ev):
+      if progression_question > 4:
+        document["question"].html = "NTM"
+        del document["bouton1"]
+        del document["bouton2"]
+        del document["bouton3"]
 
-    def firstquestion3(ev):
-      global progression_question
-      if progression_question == 0:
-        progression_question += 1
-        document["question"].html = 'Comment ça "peut-être" ?'
-        document["bouton1"].html = "Je ne sais pas"
-        document["bouton2"].html = "Je suis attardé"
-        document["bouton3"].html = "Je me fous de ta gueule"
+    document["bouton1"].bind("click", bout)
+    document["bouton2"].bind("click", bout)
+    document["bouton3"].bind("click", bout)
 
-    if progression_question == 0:
-      document["bouton1"].bind("click", firstquestion1)
-      document["bouton2"].bind("click", firstquestion2)
-      document["bouton3"].bind("click", firstquestion3)
-
-    def secondquestion1(ev):
-      global progression_question
-      if progression_question == 1:
-        progression_question += 1
-        document["question"].html = "Trotskiste ?"
-        document["bouton1"].html = "En fait non"
-        document["bouton2"].html = "bah oui"
-        document["bouton3"].html = "quoi t'aime pas ?"
-    
-    if progression_question == 1:
-      document["bouton1"].bind("click", secondquestion1)
-
+    document["bouton1"].bind("click", byebye)
+    document["bouton2"].bind("click", byebye)
+    document["bouton3"].bind("click", byebye)
 
     </script>
     
@@ -85,19 +65,19 @@
       </div>
 
       <div id="Layer4" style="position:absolute; left:730px; top:520px; width:150px; height:132px; z-index:4">
-      <p id="question">Es-tu communiste ?</p>
+      <p id="question">xfg</p>
       </div>
 
       <div id="Layer5" style="position:absolute; left:710px; top:590px; width:150px; height:132px; z-index:4">
-       <button class="bouton" type="button" id="bouton1">OUI</button>
+       <button class="bouton" type="button" id="bouton1">1</button>
       </div>
 
       <div id="Layer6" style="position:absolute; left:710px; top:650px; width:150px; height:132px; z-index:4">
-       <button class="bouton" type="button"id="bouton2">NON</button>
+       <button class="bouton" type="button"id="bouton2">2</button>
       </div>
 
       <div id="Layer7" style="position:absolute; left:710px; top:710px; width:150px; height:132px; z-index:4">
-        <button class="bouton" type="button"id="bouton3">PEUT-ETRE</button>
+        <button class="bouton" type="button"id="bouton3">3</button>
       </div>
 
       <div id="Layer8" style="position:absolute; left:800px; top:700px; width:150px; height:132px; z-index:5">
