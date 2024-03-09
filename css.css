@@ -1,9 +1,8 @@
 body
 {font-family: "Gill Sans", cursive;
 text-decoration: underline;
-background-image: url("Harry-Potter-Hogwarts-castle-winter-architecture-2265070-wallhere.com.jpg"); background-repeat: no-repeat;background-size: cover;
-color: rgb(0, 0, 0)
-
+color: rgb(0, 0, 0);
+background-image: url("hogwart.jpg"); background-repeat: no-repeat;background-size: cover;
 }
 .bouton{
     display: block;
